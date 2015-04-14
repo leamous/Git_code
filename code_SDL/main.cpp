@@ -6,34 +6,35 @@ void pause ();
 
 int main(int argc, char *argv[])
 {
-    SDL_Surface *ecran = NULL, *lignes[256] = {NULL};
-    SDL_Rect position;
-    int i = 0;
+    SDL_Surface *ecran = NULL, *imageDeFond = NULL, *bulle = NULL;
+    SDL_Rect positionFond, positionBulle;
+
+    positionFond.x = 0;
+    positionFond.y = 0;
+    positionBulle.x = 290;
+    positionBulle.y = 150;
+
 
     SDL_Init(SDL_INIT_VIDEO);
 
-    ecran = SDL_SetVideoMode(640, 256, 32, SDL_HWSURFACE);
+    SDL_WM_SetIcon(SDL_LoadBMP("bulle2.bmp"),NULL);
 
-    for (i = 0 ; i <= 255 ; i++)
-        lignes[i] = SDL_CreateRGBSurface(SDL_HWSURFACE, 640, 1, 32, 0, 0, 0, 0);
+    ecran = SDL_SetVideoMode(1000,600,32, SDL_HWSURFACE);
+    SDL_WM_SetCaption("Bubble Blast fever", NULL);
 
-    SDL_WM_SetCaption("JACKKKY", NULL);
+    imageDeFond= SDL_LoadBMP("sdl_test.bmp");
+    SDL_BlitSurface(imageDeFond,NULL, ecran, &positionFond);
 
-    SDL_FillRect(ecran, NULL, SDL_MapRGB(ecran->format, 255, 0, 112));
-
-    for (i = 0 ; i <= 255 ; i++)
-    {
-        position.x = 0; // Les lignes sont à gauche (abscisse de 0)
-        position.y = i; // La position verticale dépend du numéro de la ligne
-        SDL_FillRect(lignes[i], NULL, SDL_MapRGB(ecran->format, i, 0,0 ));
-        SDL_BlitSurface(lignes[i], NULL, ecran, &position);
-    }
+    bulle = SDL_LoadBMP("sans_titre_converted.bmp");
+    SDL_SetColorKey(bulle, SDL_SRCCOLORKEY, SDL_MapRGB(bulle->format, 63, 72, 204));
+    SDL_SetAlpha(bulle, SDL_SRCALPHA, 140);
+    SDL_BlitSurface(bulle, NULL, ecran, &positionBulle);
 
     SDL_Flip(ecran);
     pause();
 
-    for (i = 0 ; i <= 255 ; i++) // N'oubliez pas de libérer les 256 surfaces
-        SDL_FreeSurface(lignes[i]);
+    SDL_FreeSurface(imageDeFond);
+    SDL_FreeSurface(bulle);
     SDL_Quit();
 
     return EXIT_SUCCESS;
